@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import com.gpch.cart.*;
 import com.gpch.cart.service.CartService;
 import com.gpch.login.model.User;
+import com.gpch.login.repository.UserRepository;
 import com.gpch.login.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -62,9 +63,22 @@ public class LoginController {
         quantidade++;
         cart.setQuantity(String.valueOf(quantidade));
         cartService.saveCart(cart);
+        modelAndView.addObject("userName", user.getName());
         modelAndView.addObject("quantity", quantidade);
         return modelAndView;
         
+    }
+    
+    @RequestMapping(value={"/deleteRegistration"}, method = RequestMethod.GET)
+    public ModelAndView deleteRegistration()
+    {
+        ModelAndView modelAndView = new ModelAndView();
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        userService.deleteByEmail(user.getEmail());
+        modelAndView.addObject("successMessage", "User has been deleted successfully");
+        modelAndView.setViewName("bootstrap-shop/index");
+        return modelAndView;
     }
     @RequestMapping(value={"/"}, method = RequestMethod.GET)
     public ModelAndView index(){
@@ -156,6 +170,40 @@ public class LoginController {
         return modelAndView;
     }
 
+
+    @RequestMapping(value = "/registrationUpdate", method = RequestMethod.POST)
+    public ModelAndView registrationUpdate(@Valid User user, BindingResult bindingResult) {
+        ModelAndView modelAndView = new ModelAndView();
+        User userExists = userService.findUserByEmail(user.getEmail());
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("registrationUpdate");
+        } else {
+        	User userUpdate = userService.findUserByEmail(user.getEmail());
+        	userUpdate.setName(user.getName());
+        	userUpdate.setLastName(user.getLastName());
+        	userUpdate.setPassword(user.getPassword());
+            userService.saveUser(userUpdate);
+            modelAndView.addObject("successMessage", "User has been updated successfully");
+            modelAndView.addObject("user", userUpdate);
+            modelAndView.setViewName("registrationUpdate");
+
+        }
+        return modelAndView;
+    }
+
+    
+    @RequestMapping(value="/registrationUpdate", method = RequestMethod.GET)
+    public ModelAndView registrationUpdate(){
+    	ModelAndView modelAndView = new ModelAndView();
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        modelAndView.addObject("user", user);
+        modelAndView.setViewName("registrationUpdate");
+        return modelAndView;
+    }
+   
+    
+    
     @RequestMapping(value="/faq", method = RequestMethod.GET)
     public String faq(){
     	return "/bootstrap-shop/faq";
