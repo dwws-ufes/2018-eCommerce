@@ -1,0 +1,34 @@
+Spring Initializr: bootstrap your application now
+https://start.spring.io/
+
+Spring Boot Starters:
+
+Spring Boot Starters are a set of convenient dependency descriptors that you can include in your application. You get a one-stop-shop for all the Spring and related technology that you need without having to hunt through sample code and copy paste loads of dependency descriptors. For example, if you want to get started using Spring and JPA for database access just include the spring-boot-starter-data-jpa dependency in your project, and you are good to go.
+
+- spring-boot-starter
+  Core starter, including auto-configuration support, logging and YAML
+
+- Controlador Frontal e outros
+  - spring-boot-starter-web
+  Starter for building web, including RESTful, applications using Spring MVC. Uses Tomcat as the default embedded container
+
+- Mapeamento Objeto-Relacional
+  - spring-boot-stater-data-jpa
+  Starter for using Spring Data JPA with Hibernate
+
+- Segurança
+  - spring-boot-starter-security
+  Starter for using Spring Security
+
+- Injeção de Dependência
+  *inclusa no Spring MVC (ou Vraptor)
+
+- Views -> Decoração?
+  - spring-boot-starter-thymeleaf
+  Starter for building MVC web applications using Thymeleaf views
+
+  - spring-boot-starter-freemarker
+  Starter for building MVC web applications using FreeMarker views
+
+  - spring-boot-starter-groovy-templates
+  Starter for building MVC web applications using Groovy Templates views
