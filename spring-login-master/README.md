@@ -1,7 +1,5 @@
-# Spring Security Login Tutorial
-
-Tutorial / Full Information
-https://medium.com/@gustavo.ponce.ch/spring-boot-spring-mvc-spring-security-mysql-a5d8545d837d
+# 2018-eCommerce
+Assignment for the 2018 edition of the "Web Development and the Semantic Web" course, by Douglas Funayama Tavares and Vitor Henrique de Moraes Escalfoni.
 
 1. mvn clean
 2. mvn clean install
