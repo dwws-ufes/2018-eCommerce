@@ -1,7 +1,7 @@
 # 2018-eCommerce
 Assignment for the 2018 edition of the "Web Development and the Semantic Web" course, by Douglas Funayama Tavares and Vitor Henrique de Moraes Escalfoni.
 
-## Install trought IDE (Eclipse)
+## Install throught IDE (Eclipse)
 
 1. Install [Eclipse IDE for Java EE Developers](https://www.eclipse.org/downloads/)
 
@@ -20,7 +20,7 @@ spring.datasource.password = Root123
 
 6. Clone this repository and Import into Eclipse as an “Existing Maven Project”
 
-## Install trought Maven
+## Install throught Maven
 
 1. mvn clean
 2. mvn clean install
