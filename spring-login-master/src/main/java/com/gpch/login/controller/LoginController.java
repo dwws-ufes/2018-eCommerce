@@ -1,5 +1,14 @@
 package com.gpch.login.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.gpch.cart.*;
@@ -7,12 +16,23 @@ import com.gpch.cart.service.CartService;
 import com.gpch.login.model.User;
 import com.gpch.login.repository.UserRepository;
 import com.gpch.login.service.UserService;
+
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +43,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class LoginController {
-
+	private static class products {
+	   List<String> description;
+	   List<String> name;
+	}
     @Autowired
     private UserService userService;
     
@@ -38,6 +61,94 @@ public class LoginController {
         modelAndView.setViewName("login");
         return modelAndView;
     }
+    static products getDescriptions() {
+    	products descriptionList = new products();
+    	descriptionList.description = new ArrayList<String>();
+    	descriptionList.name = new ArrayList<String>();
+    	
+    	String query = 	"PREFIX dbo: <http://dbpedia.org/ontology/>\n" + 
+				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" + 
+				"PREFIX dbp: <http://dbpedia.org/property/>\n" + 
+				"select distinct ?label ?abstract where\n" + 
+				"{\n" + 
+				"?phone <http://dbpedia.org/property/type> <http://dbpedia.org/resource/Smartphone>.\n" + 
+				"?phone rdfs:label ?label .\n" + 
+				"?phone dbo:abstract ?abstract .\n" + 
+				"?phone dbp:cpu ?cpu\n" + 
+				"FILTER(regex(lcase(?label), \"iphone\"))\n" + 
+				"FILTER(LANG(?abstract) = 'en' && LANG(?label) = 'en')\n" + 
+				"} LIMIT 10";
+
+		QueryExecution queryExecution = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query);
+
+		ResultSet results = queryExecution.execSelect();
+
+		while (results.hasNext()) {
+			QuerySolution querySolution = results.next();
+			descriptionList.description.add(querySolution.get("abstract").toString());
+			descriptionList.name.add(querySolution.get("label").toString());
+
+		}
+
+		queryExecution.close();
+		
+		return descriptionList;
+
+	}
+    
+  @RequestMapping(value={"/escreve/{nome}"}, method = RequestMethod.GET)
+  @ResponseBody
+  public void escreve(@PathVariable String nome, HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+  	
+  	System.out.println(nome);
+      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      User user = userService.findUserByEmail(auth.getName());
+      Cart cart = cartService.findUserByEmail(user.getEmail());
+		response.setContentType("text/xml");
+		
+		 //Lista de todas as localidades cadastradas
+		//List<Localidade> localidades = localidadeService.listar();
+//		
+		Model model = ModelFactory.createDefaultModel();
+//		
+		String myNS = "http://localhost:8080/Ecommerce/data/produtos/";
+//		
+
+		String smartNS = "http://dbpedia.org/ontology/Smartphone/";
+		model.setNsPrefix("Smartphone", smartNS);
+		Resource smartIphone = ResourceFactory.createResource(smartNS + "iphone");
+//		
+//		// Pos
+		String posNS = "http://dbpedia.org/ontology/price";
+		model.setNsPrefix("pos", posNS);
+		Property suggested = ResourceFactory.createProperty(posNS + "suggested");
+		Property description = ResourceFactory.createProperty(posNS + "description");
+		Property productName = ResourceFactory.createProperty(posNS + "productName");
+//		
+//		// Currency amount
+		int i=0;
+		
+		String produto;
+		String desc;
+		products descriptions = getDescriptions();
+		for(i=0;i<descriptions.description.size();i++) {
+			desc = (descriptions.description.get(i));
+			produto = (descriptions.name.get(i));
+			model.createResource(myNS + nome + i)
+			.addProperty(RDF.type, smartIphone)
+			//.addProperty(RDFS.label, nome)
+			.addProperty(suggested, nome)
+			.addProperty(description, desc)
+			.addProperty(productName, produto);
+		}
+
+		
+		try (PrintWriter out = response.getWriter()) {
+			model.write(out, "RDF/XML");
+		}
+  	System.out.println("entrou");
+	}
     @RequestMapping(value={"/product_summary"}, method = RequestMethod.GET)
     public ModelAndView product_summary(){
         ModelAndView modelAndView = new ModelAndView();
@@ -47,6 +158,12 @@ public class LoginController {
         Cart cart = cartService.findUserByEmail(user.getEmail());
         int quantidade = Integer.parseInt(cart.getQuantity());
         modelAndView.addObject("quantity", quantidade);
+        modelAndView.addObject("id", "nomeProduto");
+        products descriptions = getDescriptions();
+        cart.setDescription(descriptions.description.get(0));
+        cart.setName(descriptions.name.get(0));
+        modelAndView.addObject("description", descriptions.description);
+        modelAndView.addObject("productName", descriptions.name);
         return modelAndView;
         
     }

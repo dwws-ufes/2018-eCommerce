@@ -1,5 +1,7 @@
 package com.gpch.cart;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,6 +21,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "cart")
 public class Cart {
+	private String description;
+	private String name;
     public int getId() {
 		return id;
 	}
@@ -48,6 +52,18 @@ public class Cart {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setName(String description) {
+		this.name = description;
+	}
+	public String getName() {
+		return name;
 	}
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)

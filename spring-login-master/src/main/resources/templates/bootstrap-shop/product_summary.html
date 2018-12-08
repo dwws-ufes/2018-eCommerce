@@ -57,8 +57,8 @@
 </a>
   <div class="navbar-inner">
     <a class="brand" href="index.html"><img src="themes/images/logo.png" alt="Bootsshop"/></a>
-		<form class="form-inline navbar-search" method="post" action="products.html" >
-		<input id="srchFld" class="srchTxt" type="text" />
+		<form role="form" th:action="@{/escreve}" method="post">
+			<p>Id: <input type="text" th:field="*{id}" /></p>
 		  <select class="srchTxt">
 			<option>All</option>
 			<option>CLOTHES </option>
@@ -116,6 +116,25 @@ function increment(x, y) {
     $.ajax({
         type: "GET",
         url: "/updateQuantity/" + quantity,
+        cache: false,
+        timeout: 600000,
+        success: function (data) {
+            console.log("SUCCESS : ", data);
+        },
+        error: function (e) {
+            console.log("ERROR : ", e);
+
+        }
+    });
+
+}
+function setPrice(price) {
+
+ 	var quantity = x;
+
+    $.ajax({
+        type: "GET",
+        url: "/setPrice/" + price,
         cache: false,
         timeout: 600000,
         success: function (data) {
@@ -204,7 +223,6 @@ function increment(x, y) {
 	<h3>  SHOPPING CART [ <small><span th:utext="${quantity}"></span> Item(s) </small>]<a href="products.html" class="btn btn-large pull-right"><i class="icon-arrow-left"></i> Continue Shopping </a></h3>	
 	<hr class="soft"/>
 		
-			
 	<table class="table table-bordered">
               <thead>
                 <tr>
@@ -212,19 +230,21 @@ function increment(x, y) {
                   <th>Description</th>
                   <th>Quantity/Update</th>
 				  <th>Price</th>
+  				  <th>SugestPrice</th>
                   <th>Discount</th>
                   <th>Tax</th>
                   <th>Total</th>
 				</tr>
               </thead>
               <tbody>
-                <tr>
-                  <td> <img width="60" src="themes/images/products/4.jpg" alt=""/></td>
-                  <td>MASSA AST<br/>Color : black, Material : metal</td>
+                <tr th:each="i : ${#numbers.sequence( 1, 81/20)}">
+                  <td>  <p th:text="${ productName[i] }"></p></td>
+                  <td><p th:text="${ description[i] }"></p></td>
 				  <td>
 					<div class="input-append"><input class="span1" style="max-width:34px" th:attr="placeholder=${quantity}" id="appendedInputButtons" size="16" type="text"><button class="btn" type="button"><a th:href="@{/decrementQuantity}"><i class="icon-minus"></i></a></button><button class="btn" type="button"><a th:href="@{/incrementQuantity}"><i class="icon-plus"></i></a></button><button class="btn btn-danger" type="button"><i class="icon-remove icon-white"></i></button>				</div>
 				  </td>
                   <td>$120.00</td>
+                  <td><input>$140.00<button class="btn" type="button"><a th:href="@{/escreve/{id}/{descricao} (id=${productName[i]}, descricao=${description[i]	})}">sendSugest</a></button></td>
                   <td>$25.00</td>
                   <td>$15.00</td>
                   <td>$110.00</td>
