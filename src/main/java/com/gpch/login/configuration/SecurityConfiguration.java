@@ -1,4 +1,4 @@
-package com.gpch.login.configuration;
+package com.ecommerce.login.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.gpch.cart.service.CartService;
+import com.ecommerce.cart.service.CartService;
 
 import javax.sql.DataSource;
 

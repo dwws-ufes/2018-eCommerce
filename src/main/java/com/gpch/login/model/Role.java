@@ -1,4 +1,4 @@
-package com.gpch.login.model;
+package com.ecommerce.login.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

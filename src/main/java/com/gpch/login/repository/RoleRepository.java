@@ -1,6 +1,6 @@
-package com.gpch.login.repository;
+package com.ecommerce.login.repository;
 
-import com.gpch.login.model.Role;
+import com.ecommerce.login.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

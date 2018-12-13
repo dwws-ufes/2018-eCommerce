@@ -1,4 +1,4 @@
-package com.gpch.login;
+package com.ecommerce.login;
 
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan({"com"})
 @ComponentScan(basePackages = {"com"})
-@ComponentScan("com.gpch.cart.repository.CartRepository")
+@ComponentScan("com.ecommerce.cart.repository.CartRepository")
 @EntityScan(basePackages = {"com"})
 @SpringBootApplication
 public class LoginApplication {

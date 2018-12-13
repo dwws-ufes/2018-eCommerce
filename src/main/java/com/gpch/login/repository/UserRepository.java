@@ -1,6 +1,6 @@
-package com.gpch.login.repository;
+package com.ecommerce.login.repository;
 
-import com.gpch.login.model.User;
+import com.ecommerce.login.model.User;
 
 import javax.transaction.Transactional;
 

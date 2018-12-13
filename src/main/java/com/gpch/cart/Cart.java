@@ -1,4 +1,4 @@
-package com.gpch.cart;
+package com.ecommerce.cart;
 
 import java.util.List;
 

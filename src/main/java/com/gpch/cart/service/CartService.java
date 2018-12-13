@@ -1,9 +1,9 @@
-package com.gpch.cart.service;
+package com.ecommerce.cart.service;
 
-import com.gpch.login.repository.CartRepository;
-import com.gpch.login.repository.RoleRepository;
-import com.gpch.login.repository.UserRepository;
-import com.gpch.cart.*;
+import com.ecommerce.login.repository.CartRepository;
+import com.ecommerce.login.repository.RoleRepository;
+import com.ecommerce.login.repository.UserRepository;
+import com.ecommerce.cart.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
