@@ -372,6 +372,58 @@ public class LoginController {
 		return descriptionList;
     }
 
+    @RequestMapping(value={"/escreveReview/{nome}"}, method = RequestMethod.GET)
+    @ResponseBody
+    public void escreveReview(@PathVariable String nome, HttpServletRequest request, HttpServletResponse response)
+  			throws ServletException, IOException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        Cart cart = cartService.findUserByEmail(user.getEmail());
+  		response.setContentType("text/xml");
+  
+  		 //Lista de todas as localidades cadastradas
+  		//List<Localidade> localidades = localidadeService.listar();
+  		
+  		Model model = ModelFactory.createDefaultModel();
+  		
+  		String myNS = "http://localhost:8080/Ecommerce/data/produtos/";
+  		
+  
+  		String smartNS = "http://dbpedia.org/resource/Camera/";
+  		model.setNsPrefix("Camera", smartNS);
+  		Resource smartFuji = ResourceFactory.createResource(smartNS + "Fuji");
+  		
+  		// Pos
+  		String posNS = "http://dbpedia.org/ontology/review/";
+  		model.setNsPrefix("pos", posNS);
+  		Property productReview = ResourceFactory.createProperty(posNS + "productReview");
+		Property suggested = ResourceFactory.createProperty(posNS + "suggested");
+  		Property description = ResourceFactory.createProperty(posNS + "description");
+  		Property productName = ResourceFactory.createProperty(posNS + "productName");
+  		
+  		// Currency amount
+  		int i=0;
+  
+  		String produto;
+  		String desc;
+  		products descriptions = getCameraDescription();
+  		for(i=0;i<descriptions.description.size();i++) {
+  			desc = (descriptions.description.get(i));
+  			produto = (descriptions.name.get(i));
+  			model.createResource(myNS + nome + i)
+  			.addProperty(RDF.type, smartFuji)
+  			//.addProperty(RDFS.label, nome)
+            .addProperty(suggested, nome)
+  			.addProperty(description, desc)
+  			.addProperty(productName, produto);
+  		}
+  
+  
+  		try (PrintWriter out = response.getWriter()) {
+  			model.write(out, "RDF/XML");
+  		}
+  	}
+
     @RequestMapping(value="/admin/home", method = RequestMethod.GET)
     public ModelAndView home(){
         ModelAndView modelAndView = new ModelAndView();
