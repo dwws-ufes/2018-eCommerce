@@ -1,4 +1,4 @@
-package com.gpch.login.controller;
+package com.ecommerce.login.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.gpch.cart.*;
-import com.gpch.cart.service.CartService;
-import com.gpch.login.model.User;
-import com.gpch.login.repository.UserRepository;
-import com.gpch.login.service.UserService;
+import com.ecommerce.cart.*;
+import com.ecommerce.cart.service.CartService;
+import com.ecommerce.login.model.User;
+import com.ecommerce.login.repository.UserRepository;
+import com.ecommerce.login.service.UserService;
 
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -334,9 +334,44 @@ public class LoginController {
     public ModelAndView product_details() {
     	ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("bootstrap-shop/product_details");
+        modelAndView.addObject("id", "nomeProduto");
+        products descriptions = getCameraDescription();
+        modelAndView.addObject("description", descriptions.description);
+        modelAndView.addObject("productName", descriptions.name);
         return modelAndView;
     }
-    
+
+    static products getCameraDescription() {
+    	products descriptionList = new products();
+    	descriptionList.description = new ArrayList<String>();
+    	descriptionList.name = new ArrayList<String>();
+    	
+    	String query = 	"PREFIX dbo: <http://dbpedia.org/ontology/>\n" + 
+				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" + 
+				"PREFIX dbp: <http://dbpedia.org/property/>\n" + 
+				"select distinct ?label ?abstract where\n" + 
+				"{\n" + 
+				"?camera <http://purl.org/linguistics/gold/hypernym> <http://dbpedia.org/resource/Camera> .\n" + 
+				"?camera rdfs:label ?label .\n" + 
+				"?camera dbo:abstract ?abstract .\n" +
+				"FILTER(LANG(?abstract) = 'en' && LANG(?label) = 'en')\n" + 
+				"FILTER(regex(lcase(?label), \"s9500\"))\n" + 
+				"} LIMIT 10";
+
+		QueryExecution queryExecution = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query);
+
+		ResultSet results = queryExecution.execSelect();
+
+		while (results.hasNext()) {
+			QuerySolution querySolution = results.next();
+			descriptionList.description.add(querySolution.get("abstract").toString());
+			descriptionList.name.add(querySolution.get("label").toString());
+		}
+        queryExecution.close();
+		
+		return descriptionList;
+    }
+
     @RequestMapping(value="/admin/home", method = RequestMethod.GET)
     public ModelAndView home(){
         ModelAndView modelAndView = new ModelAndView();
