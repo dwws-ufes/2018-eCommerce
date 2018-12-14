@@ -1,7 +1,7 @@
 # 2018-eCommerce
-Assignment for the 2018 edition of the "Web Development and the Semantic Web" course, by Douglas Funayama Tavares and Vitor Henrique de Moraes Escalfoni.
+Assignment for the 2018 edition of the "Web Development and the Semantic Web" course, by [Douglas Funayama Tavares](https://github.com/Funay1) and [Vitor Henrique de Moraes Escalfoni](https://github.com/scalfs).
 
-Technology involved: Spring Boot, Spring MVC, Spring Data, Spring Security, Tomcat, MySQL, Maven, Jena, Java and Docker. 
+Technologies involved: Spring Boot, Spring MVC, Spring Data, Spring Security, Tomcat, MySQL, Maven, Jena, Java and Docker. 
 
 ## Installation Guide
 It will be presented a variety of ways to deploy and test the application. For all of those you need to clone this repository to your machine, and follow the respective guide to deploy.
@@ -26,6 +26,8 @@ spring.datasource.url = jdbc:mysql://localhost:3306/sys?useSSL=false
 spring.datasource.username = root
 spring.datasource.password = Root123
 ```
+*It is necessary to do this step, since the repository is configured to work via Docker, primarily.
+
 5. Install [lombok](https://projectlombok.org/download) on Eclipse
 
 6. Clone this repository and Import into Eclipse as an “Existing Maven Project”
@@ -70,7 +72,7 @@ Simply run
 ```
 docker-compose up
 ```
-(Takes a while to start the because it waits for the db container to be healthy, but gitve it a chance)
+(Takes a while to start the because it waits for the db container to be healthy, but give it a chance)
 
 ## Testing the application
 Make sure you didn't had compilation or communication problems and open http://localhost:8080/ on your favorite browser!
